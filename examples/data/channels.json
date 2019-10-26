@@ -1,0 +1,32 @@
+[
+  {
+    "id": "CHANNELID",
+    "name": "general",
+    "created": "1524799526",
+    "creator": "USERID",
+    "is_archived": false,
+    "is_general": true,
+    "members": [
+      "USERID"
+    ],
+    "pins": [
+      {
+        "id": "1558706724.000400",
+        "type": "C",
+        "created": 1569567288,
+        "user": "USERID",
+        "owner": "USERID"
+      }
+    ],
+    "topic": {
+        "value": "",
+        "creator": "USERID",
+        "last_set": "1524819390"
+    },
+    "purpose": {
+        "value": "",
+        "creator": "USERID",
+        "last_set": "1524819558"
+    }
+}
+]
