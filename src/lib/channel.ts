@@ -14,7 +14,7 @@ export type Pin = {
   id: string
   /** Type of pin. e.g. `C` */
   type: string
-  /** Date and time the pinned (UTC). */
+  /** Date and time the pinned (UNIX Timestamp). */
   created: number
   /** Identifier of the user. */
   user: string
@@ -28,7 +28,7 @@ export type Channel = {
   id: string
   /** Name of the channel. */
   name: string
-  /** Date and time the channel was created (UTC). */
+  /** Date and time the channel was created (UNIX Timestamp). */
   created: string
   /** Creator of the channel. */
   creator: string
@@ -43,12 +43,12 @@ export type Channel = {
   /** Header message of the channel. */
   topic: HeaderMessage
   /** Collection of pinned messages and files */
-  pins: Pin[]
+  pins?: Pin[]
 }
 
 /**
  * Parse header message by channel.
- * @param obj An object of the `channels.json` array value.
+ * @param obj Object of the `channels.json` array value.
  * @returns Header message.
  */
 const parseHeaderMessage = (obj: any): HeaderMessage => {
@@ -61,10 +61,10 @@ const parseHeaderMessage = (obj: any): HeaderMessage => {
 
 /**
  * Parse pinned data by channel.
- * @param obj An object of the `channels.json` array value.
+ * @param obj Object of the channel value.
  * @returns Collection of the pinned data.
  */
-const parsePins = (obj: any | undefined): Pin[] => {
+const parsePins = (obj: any): Pin[] => {
   const pins: Pin[] = []
   if (!Array.isArray(obj)) {
     return pins
@@ -85,16 +85,10 @@ const parsePins = (obj: any | undefined): Pin[] => {
 
 /**
  * Parse channel information.
- * @param obj An element of the `channels.json` array.
+ * @param obj Element of the `channels.json` array.
  * @returns Channel information.
  */
 const parseChannel = (obj: any): Channel => {
-  const pins: Pin[] = []
-  if (obj.pins) {
-    for (const value of obj.pins) {
-    }
-  }
-
   return {
     id: obj.id as string,
     name: obj.name as string,
@@ -105,7 +99,7 @@ const parseChannel = (obj: any): Channel => {
     members: obj.members as string[],
     purpose: parseHeaderMessage(obj.purpose),
     topic: parseHeaderMessage(obj.topic),
-    pins: parsePins(obj.pins)
+    pins: obj.pins ? parsePins(obj.pins) : obj.pins
   }
 }
 
