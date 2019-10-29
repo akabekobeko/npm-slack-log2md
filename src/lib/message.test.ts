@@ -3,7 +3,7 @@ import parseMessage from './message'
 
 describe('parseMessage', () => {
   const values = JSON.parse(
-    fs.readFileSync('./examples/data/messages.json', 'utf8')
+    fs.readFileSync('./examples/data/general/messages.json', 'utf8')
   ) as any[]
 
   it('Channel join', () => {
@@ -20,7 +20,9 @@ describe('parseMessage', () => {
     expect(message.user).toBe('USERID')
     expect(message.type).toBe('message')
     expect(message.timeStamp).toBe('1570172544.014600')
-    expect(message.text).toBe('<@USERID> Sample message')
+    expect(message.text).toBe(
+      '<@USERID> <#CHANNELID> Sample message\nSample\n\nSample'
+    )
     expect(message.clientMessageId).toBe('363953ac-f635-4cfa-99f3-70f87b04a9cc')
     expect(message.team).toBe('TEAMID')
     expect(message.userTeam).toBe('TEAMID')

@@ -1,0 +1,18 @@
+{
+  "name": "examples-slack-log2md",
+  "description": "Examples for the slack-log2md.",
+  "private": true,
+  "version": "1.0.0",
+  "author": "akabeko (http://akabeko.me/)",
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "js": "node index.js",
+    "ts": "ts-node index.ts"
+  },
+  "dependencies": {
+    "slack-log2md": "^1.0.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.2"
+  }
+}
