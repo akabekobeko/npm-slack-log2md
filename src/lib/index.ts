@@ -1,4 +1,5 @@
 import fs from 'fs'
+import util from 'util'
 import log2md from './log2md'
 
 /** Options of slack-log2md. */
@@ -21,7 +22,7 @@ export type Options = {
  * @returns Checked data.
  * @throws The directory specified in `input` does not exist
  */
-const checkOptions = (options: Options) => {
+const checkOptions = async (options: Options) => {
   // Make a copy because the argument is not rewritten
   const opts = options
 
@@ -29,8 +30,14 @@ const checkOptions = (options: Options) => {
     throw new Error(`Log directory does not exist. "${opts.input}"`)
   }
 
+  // If the output destination does not exist and cannot be created, set it to `input`
   if (!fs.existsSync(opts.output)) {
-    opts.output = opts.input
+    const mkdirAsync = util.promisify(fs.mkdir)
+    try {
+      await mkdirAsync(opts.output)
+    } catch (err) {
+      opts.output = opts.input
+    }
   }
 
   return opts
@@ -41,7 +48,7 @@ const checkOptions = (options: Options) => {
  * @param options Options.
  */
 const slackLog2Md = async (options: Options): Promise<void> => {
-  const opts = checkOptions(options)
+  const opts = await checkOptions(options)
   return log2md(opts.input, opts.output, opts.report)
 }
 

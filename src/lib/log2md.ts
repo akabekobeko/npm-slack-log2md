@@ -11,6 +11,7 @@ const readFileAsync = util.promisify(fs.readFile)
 const readdirAsync = util.promisify(fs.readdir)
 const writeFileASync = util.promisify(fs.writeFile)
 const statAsync = util.promisify(fs.stat)
+const mkdirAsync = util.promisify(fs.mkdir)
 
 /** Options of slack-log2md. */
 export type Options = {
@@ -151,6 +152,11 @@ const convertChannelMessages = async (
   channels: Map<string, Channel>,
   users: Map<string, User>
 ) => {
+  // Create a sub directory for each channel
+  if (!fs.existsSync(dest)) {
+    await mkdirAsync(dest)
+  }
+
   const filePaths = await enumMessageJSONs(src)
   for (const filePath of filePaths) {
     const messages = await readMessages(filePath)
@@ -174,13 +180,18 @@ const log2Md = async (
   report: boolean = false
 ): Promise<void> => {
   const logger = new Logger(report)
+  logger.log(`src: "${inputDir}"`)
+  logger.log(`dest: "${outputDir}"`)
+  logger.log('Converted channels...')
+
   const channels = await readChannels(inputDir)
   const users = await readUsers(inputDir)
   const channelDirs = await enumChannelDirs(inputDir)
 
   for (const src of channelDirs) {
-    logger.log(path.basename(src))
-    const dest = path.join(outputDir, path.basename(src))
+    const channel = path.basename(src)
+    logger.log(`  #${channel}`)
+    const dest = path.join(outputDir, channel)
     await convertChannelMessages(src, dest, channels, users)
   }
 
