@@ -1,0 +1,62 @@
+[
+  {
+    "user": "USERID",
+    "type": "message",
+    "subtype": "channel_join",
+    "ts": "1569073381.002100",
+    "text": "<@USERID> has joined the channel"
+  },
+  {
+    "client_msg_id": "363953ac-f635-4cfa-99f3-70f87b04a9cc",
+    "type": "message",
+    "text": "<@USERID> <#CHANNELID> Sample message\nSample\n\nSample",
+    "user": "USERID",
+    "ts": "1570172544.014600",
+    "team": "TEAMID",
+    "user_team": "TEAMID",
+    "source_team": "TEAMID",
+    "user_profile": {
+      "avatar_hash": "e258f5ed5ba8",
+      "image_72": "https:\/\/example.com\/sample.jpg",
+      "first_name": "First",
+      "real_name": "Real",
+      "display_name": "sample",
+      "team": "TEAMID",
+      "name": "sample",
+      "is_restricted": false,
+      "is_ultra_restricted": false
+    },
+    "thread_ts": "1570172544.014600",
+    "reply_count": 4,
+    "reply_users_count": 3,
+    "latest_reply": "1570175686.020000",
+    "reply_users": [
+      "USERID"
+    ],
+    "replies": [
+      {
+        "user": "USERID",
+        "ts": "1570173879.019200"
+      }
+    ],
+    "subscribed": true,
+    "last_read": "1570175686.020000",
+    "reactions": [
+      {
+        "name": "+1",
+        "users": [
+            "USERID"
+        ],
+        "count": 1
+      }
+    ]
+  },
+  {
+    "type": "message",
+    "subtype": "bot_message",
+    "text": ":flag-gb::  Sample message.",
+    "ts": "1570172545.014700",
+    "username": "Sample Bot",
+    "bot_id": "BOTID"
+  }
+]

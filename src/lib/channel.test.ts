@@ -18,7 +18,7 @@ describe('parseChannel', () => {
     expect(channel.members[0]).toBe('USERID')
 
     // Pin
-    const pin = channel.pins[0]
+    const pin = channel.pins![0]
     expect(pin.id).toBe('1558706724.000400')
     expect(pin.type).toBe('C')
     expect(pin.created).toBe(1569567288)

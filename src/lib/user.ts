@@ -78,7 +78,7 @@ export type User = {
   timeZone: string
   /** Time zone label name where the user is located. e.g. `Japan Standard Time`. JSON: `time_zone_label`. */
   timeZoneLabel: string
-  /** Offset from UTC in the time zone where the user is located. JSON: `time_zone_offset`. */
+  /** Offset from UNIX Timestamp in the time zone where the user is located. JSON: `time_zone_offset`. */
   timeZoneOffset: number
   /** Profile of the user. */
   profile: Profile
@@ -96,7 +96,7 @@ export type User = {
   isBot: boolean
   /** `true` if the user is an application user. JSON: `is_app_user`. */
   isAppUser: boolean
-  /** Date and time when user information was updated (UTC). */
+  /** Date and time when user information was updated (UNIX Timestamp). */
   updated: number
 }
 
@@ -111,7 +111,7 @@ const unescapeStr = (str: string) => {
 
 /**
  * Parse profile by user information.
- * @param obj An object of the user information.
+ * @param obj Object of the user information.
  * @returns Profile.
  */
 const parseProfile = (obj: any): Profile => {
@@ -150,7 +150,7 @@ const parseProfile = (obj: any): Profile => {
 
 /**
  * Parse user information.
- * @param obj An element of the `users.json` array.
+ * @param obj Element of the `users.json` array.
  * @returns User information.
  */
 const parseUser = (obj: any): User => {
