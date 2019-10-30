@@ -15,7 +15,35 @@ $ npm install slack-log2md
 
 ## Usage
 
+Markdown file is generated from Slack log file JSON by running CLI or Node.js API.
+
+### Markdown
+
+The generated Markdown file has the following format.
+
+```markdown
+|messages|
+|---|
+|![](https://example.com/24.png) **test** 13:43|
+|`@test` has joined the channel|
+|![](https://example.com/24.png) **test** 07:02|
+|`@test` `#general` Sample message<br>Sample<br><br>Sample|
+|**Sample Bot** 07:02|
+|:flag-gb::  Sample message.|
+```
+
+- The message is output as a single column `<table>`
+- The table header will be the Slack log JSON file name
+- The message is output alternately with header (user and time) and body text
+- If a profile image is set for the user, the URL is referenced and displayed.
+- The user will use the display name if there is one, otherwise it will be the account name
+- The time is always UTC
+- `@user` and `#channel` in the body text enclose the target name in `<code>` tag.
+- Line breaks `\n` in the body text are converted to `<br>` tags
+
 ### CLI
+
+
 
 ```shell
 Usage:  slack-log2md [options]
@@ -36,22 +64,34 @@ See also:
   https://github.com/akabekobeko/npm-slack-log2md
 ```
 
-### API
+### Node.js API
 
-#### slackLog2Md(src, dest)
+#### slackLog2Md(options)
 
 Converts Slack log JSON in the specified workspace directory to Markdown.
 
-|Argument|Type|Description|
+Options:
+
+|Property|Type|Description|
 |---|---|---|
 |src|`String`|Directory path of log file exported from Slack.|
 |dest|`String`|Directory path to output Markdown file converted from log. If a nonexistent directory is specified, the same location as `input` is selected.|
+|report|`Boolean`|`true` to display the processing status of the tool to `stdout`.|
 
 Sample code:
 
 ```js
 const slackLog2Md = require('slack-log2md');
-slackLog2Md('./logs', './output');
+
+const options = {
+  input: './data',
+  output: './dest',
+  report: true
+};
+
+slackLog2Md(options).catch((err) => {
+  console.error(err)
+});
 ```
 
 # ChangeLog

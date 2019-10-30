@@ -64,6 +64,7 @@ typings/
 dist/
 .*
 examples/data/**/*.md
+examples/dest/
 package-lock.json
 !.gitignore
 !.prettierrc
