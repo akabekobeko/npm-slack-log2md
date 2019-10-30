@@ -11,15 +11,16 @@ import { User } from './user'
  */
 const formatDate = (
   date: Date = new Date(),
-  format: string = 'YYYY-MM-DD hh:mm:ss.SSS'
+  format: string = 'YYYY-MM-DD hh:mm:ss.SSS',
+  isUTC: boolean = false
 ): string => {
-  const Y = date.getFullYear()
-  const M = date.getMonth() + 1
-  const D = date.getDate()
-  const h = date.getHours()
+  const Y = isUTC ? date.getUTCFullYear() : date.getFullYear()
+  const M = (isUTC ? date.getUTCMonth() : date.getMonth()) + 1
+  const D = isUTC ? date.getUTCDate() : date.getDate()
+  const h = isUTC ? date.getUTCHours() : date.getHours()
   const l = 12 < h ? h - 12 : h
-  const m = date.getMinutes()
-  const s = date.getSeconds()
+  const m = isUTC ? date.getUTCMinutes() : date.getMinutes()
+  const s = isUTC ? date.getUTCSeconds() : date.getSeconds()
 
   let str = format.replace(/YYYY/g, String(Y))
   str = str.replace(/MM/g, ('0' + M).slice(-2))
@@ -76,7 +77,7 @@ const formatDate = (
 
   // milliSeconds
   if (str.match(/S/g)) {
-    const S = date.getMilliseconds()
+    const S = date.getUTCMilliseconds()
     const ms = ('00' + S).slice(-3)
     for (let i = 0, max = str.match(/S/g)!.length; i < max; ++i) {
       str = str.replace(/S/, ms.substring(i, i + 1))
@@ -117,7 +118,7 @@ const getMessageUserName = (user: User) => {
  * @throws There is no user information.
  */
 const createHeader = (message: Message, users: Map<string, User>): string => {
-  const time = formatDate(tsToDate(message.timeStamp), 'hh:mm')
+  const time = formatDate(tsToDate(message.timeStamp), 'hh:mm', true)
   const user = users.get(message.user)
 
   if (user) {
