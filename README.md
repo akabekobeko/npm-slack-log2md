@@ -22,19 +22,16 @@ Markdown file is generated from Slack log file JSON by running CLI or Node.js AP
 The generated Markdown file has the following format.
 
 ```markdown
-|messages|
-|---|
-|![](https://example.com/24.png) **test** 13:43|
-|`@test` has joined the channel|
-|![](https://example.com/24.png) **test** 07:02|
-|`@test` `#general` Sample message<br>Sample<br><br>Sample|
-|**Sample Bot** 07:02|
-|:flag-gb::  Sample message.|
+# 2019-10-31
+
+|Time|Icon|Name|Message|
+|---|---|---|---|
+|13:43|![](https://example.com/test/72.png)|test|`@test` has joined the channel|
+|07:02|![](https://example.com/test/72.png)|test|`@test` `#general` Sample message<br>Sample<br><br>Sample|
+|07:02|![](https://example.com/bot/72.png)|Sample Bot|:flag-gb::  Sample message.|
 ```
 
-- The message is output as a single column `<table>`
-- The table header will be the Slack log JSON file name
-- The message is output alternately with header (user and time) and body text
+- The message is output as a `<table>`
 - If a profile image is set for the user, the URL is referenced and displayed.
 - The user will use the display name if there is one, otherwise it will be the account name
 - The time is always UTC
@@ -42,8 +39,6 @@ The generated Markdown file has the following format.
 - Line breaks `\n` in the body text are converted to `<br>` tags
 
 ### CLI
-
-
 
 ```shell
 Usage:  slack-log2md [options]
