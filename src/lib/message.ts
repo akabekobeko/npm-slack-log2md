@@ -112,9 +112,9 @@ const parseReactions = (obj: any): Reaction[] => {
 
   for (const value of obj) {
     reactions.push({
-      name: value.name,
-      users: value.users,
-      count: value.count
+      name: value.name || '',
+      users: value.users || [],
+      count: value.count || 0
     })
   }
 
@@ -134,8 +134,8 @@ const parseReplies = (obj: any): Reply[] => {
 
   for (const value of obj) {
     replies.push({
-      user: value.user,
-      timeStamp: value.ts
+      user: value.user || '',
+      timeStamp: value.ts || ''
     })
   }
 
@@ -149,15 +149,15 @@ const parseReplies = (obj: any): Reply[] => {
  */
 const parseUserProfile = (obj: any): UserProfile => {
   return {
-    avatarHash: obj.avatar_hash,
-    image72: obj.image_72 ? unescapeStr(obj.image_72) : obj.image_72,
-    firstName: obj.first_name,
-    realName: obj.real_name,
-    displayName: obj.display_name,
-    team: obj.team,
-    name: obj.name,
-    isRestricted: obj.is_restricted,
-    isUltraRestricted: obj.is_ultra_restricted
+    avatarHash: obj.avatar_hash || '',
+    image72: obj.image_72 ? unescapeStr(obj.image_72) : '',
+    firstName: obj.first_name || '',
+    realName: obj.real_name || '',
+    displayName: obj.display_name || '',
+    team: obj.team || '',
+    name: obj.name || '',
+    isRestricted: obj.is_restricted || false,
+    isUltraRestricted: obj.is_ultra_restricted || false
   }
 }
 
@@ -168,11 +168,11 @@ const parseUserProfile = (obj: any): UserProfile => {
  */
 const parseMessage = (obj: any): Message => {
   return {
-    user: obj.user,
-    type: obj.type,
-    subtype: obj.subtype,
-    timeStamp: obj.ts,
-    text: obj.text,
+    user: obj.user || '',
+    type: obj.type || '',
+    subtype: obj.subtype || '',
+    timeStamp: obj.ts || '',
+    text: obj.text || '',
     purpose: obj.purpose,
     clientMessageId: obj.client_msg_id,
     team: obj.team,

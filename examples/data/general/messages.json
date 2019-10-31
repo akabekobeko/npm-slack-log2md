@@ -17,12 +17,12 @@
     "source_team": "TEAMID",
     "user_profile": {
       "avatar_hash": "e258f5ed5ba8",
-      "image_72": "https:\/\/example.com\/sample.jpg",
+      "image_72": "https:\/\/example.com\/test\/72.png",
       "first_name": "First",
       "real_name": "Real",
-      "display_name": "sample",
+      "display_name": "test",
       "team": "TEAMID",
-      "name": "sample",
+      "name": "test",
       "is_restricted": false,
       "is_ultra_restricted": false
     },

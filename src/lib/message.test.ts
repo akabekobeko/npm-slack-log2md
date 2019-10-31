@@ -49,10 +49,10 @@ describe('parseMessage', () => {
     // User profile
     const profile = message.userProfile!
     expect(profile.avatarHash).toBe('e258f5ed5ba8')
-    expect(profile.image72).toBe('https://example.com/sample.jpg')
+    expect(profile.image72).toBe('https://example.com/test/72.png')
     expect(profile.firstName).toBe('First')
     expect(profile.realName).toBe('Real')
-    expect(profile.displayName).toBe('sample')
+    expect(profile.displayName).toBe('test')
     expect(profile.team).toBe('TEAMID')
     expect(profile.isRestricted).toBeFalsy()
     expect(profile.isUltraRestricted).toBeFalsy()

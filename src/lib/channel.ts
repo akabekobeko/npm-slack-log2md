@@ -72,11 +72,11 @@ const parsePins = (obj: any): Pin[] => {
 
   for (const value of obj) {
     pins.push({
-      id: value.id,
-      type: value.type,
-      created: value.created,
-      user: value.user,
-      owner: value.owner
+      id: value.id || '',
+      type: value.type || '',
+      created: value.created || 0,
+      user: value.user || '',
+      owner: value.owner || ''
     })
   }
 
@@ -90,16 +90,16 @@ const parsePins = (obj: any): Pin[] => {
  */
 const parseChannel = (obj: any): Channel => {
   return {
-    id: obj.id as string,
-    name: obj.name as string,
-    created: obj.created as string,
-    creator: obj.creator as string,
-    isArchived: obj.is_archived as boolean,
-    isGeneral: obj.is_general as boolean,
-    members: obj.members as string[],
+    id: obj.id || '',
+    name: obj.name || '',
+    created: obj.created || '',
+    creator: obj.creator || '',
+    isArchived: obj.is_archived || false,
+    isGeneral: obj.is_general || false,
+    members: obj.members || [],
     purpose: parseHeaderMessage(obj.purpose),
     topic: parseHeaderMessage(obj.topic),
-    pins: obj.pins ? parsePins(obj.pins) : obj.pins
+    pins: obj.pins ? parsePins(obj.pins) : []
   }
 }
 
