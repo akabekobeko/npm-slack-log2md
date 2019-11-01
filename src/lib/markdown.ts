@@ -31,14 +31,14 @@ const createBody = (
     return `\`@${$1}\``
   })
 
-  // Replace `<#CHANNELID>` to `@channel`
-  body = body.replace(/<#(.*?)>/g, (_, $1) => {
+  // Replace `<#CHANNELID|Name>` to `@channel`
+  body = body.replace(/\<#(.*?)\|(.*?)\>/g, (_, $1, $2) => {
     const channel = channels.get($1)
     if (channel) {
       return `\`#${channel.name}\``
     }
 
-    return `\`@${$1}\``
+    return `\`@${$2}\``
   })
 
   // Emoji `:flag-gb:`

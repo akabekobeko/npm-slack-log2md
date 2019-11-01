@@ -9,7 +9,7 @@
   {
     "client_msg_id": "363953ac-f635-4cfa-99f3-70f87b04a9cc",
     "type": "message",
-    "text": "<@USERID> <#CHANNELID> Sample message\nSample\n\nSample",
+    "text": "<@USERID> <#CHANNELID|general> Sample message\nSample\n\nSample",
     "user": "USERID",
     "ts": "1570172544.014600",
     "team": "TEAMID",
