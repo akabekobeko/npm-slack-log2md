@@ -1,7 +1,7 @@
 import { Message } from './message'
 import { Channel } from './channel'
 import { User } from './user'
-import getMetadata from './metadata'
+import getMetadata, { getNameFromUser } from './metadata'
 import emoji from './emoji'
 
 /**
@@ -13,7 +13,6 @@ import emoji from './emoji'
  */
 const createBody = (
   message: Message,
-  username: string,
   channels: Map<string, Channel>,
   users: Map<string, User>
 ): string => {
@@ -23,7 +22,10 @@ const createBody = (
   body = body.replace(/<@(.*?)>/g, (_, $1) => {
     const user = users.get($1)
     if (user) {
-      return `\`@${username}\``
+      const name = getNameFromUser(user)
+      if (name) {
+        return `\`@${name}\``
+      }
     }
 
     return `\`@${$1}\``
@@ -70,7 +72,7 @@ const messagesToMarkdown = (
   for (const message of messages) {
     const { time, imageURL, username } = getMetadata(message, users)
     const image = imageURL === '' ? '' : `![](${imageURL})`
-    const body = createBody(message, username, channels, users)
+    const body = createBody(message, channels, users)
     md += `|${time}|${image}|${username}|${body}|\n`
   }
 
