@@ -1,7 +1,8 @@
 import { Message } from './message'
 import { Channel } from './channel'
 import { User } from './user'
-import getMetadata from './metadata'
+import getMetadata, { getNameFromUser } from './metadata'
+import emoji from './emoji'
 
 /**
  * Create the markdown.of the message body.
@@ -12,7 +13,6 @@ import getMetadata from './metadata'
  */
 const createBody = (
   message: Message,
-  username: string,
   channels: Map<string, Channel>,
   users: Map<string, User>
 ): string => {
@@ -22,20 +22,30 @@ const createBody = (
   body = body.replace(/<@(.*?)>/g, (_, $1) => {
     const user = users.get($1)
     if (user) {
-      return `\`@${username}\``
+      const name = getNameFromUser(user)
+      if (name) {
+        return `\`@${name}\``
+      }
     }
 
     return `\`@${$1}\``
   })
 
-  // Replace `<#CHANNELID>` to `@channel`
-  body = body.replace(/<#(.*?)>/g, (_, $1) => {
+  // Replace `<#CHANNELID|Name>` to `@channel`
+  body = body.replace(/\<#(.*?)\|(.*?)\>/g, (_, $1, $2) => {
     const channel = channels.get($1)
     if (channel) {
       return `\`#${channel.name}\``
     }
 
-    return `\`@${$1}\``
+    return `\`@${$2}\``
+  })
+
+  // Emoji `:flag-gb:`
+  body = body.replace(/\:["']?([a-zA-Z0-9_\-]+)["']?\:/g, (match) => {
+    // On Slack `-` but the short name is` _`, e.g. `:flag-gb:` -> `:flag_gb:`
+    const str = match.replace('-', '_')
+    return emoji.shortnameToUnicode(str)
   })
 
   // Line break
@@ -62,7 +72,7 @@ const messagesToMarkdown = (
   for (const message of messages) {
     const { time, imageURL, username } = getMetadata(message, users)
     const image = imageURL === '' ? '' : `![](${imageURL})`
-    const body = createBody(message, username, channels, users)
+    const body = createBody(message, channels, users)
     md += `|${time}|${image}|${username}|${body}|\n`
   }
 

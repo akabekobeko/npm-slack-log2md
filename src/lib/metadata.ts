@@ -127,6 +127,22 @@ const getUser = (
 }
 
 /**
+ * Get the name from the user.
+ * @param user User.
+ * @returns Name. If it cannot be obtained, it is an empty string.
+ */
+export const getNameFromUser = (user: User): string => {
+  const profile = user.profile
+  if (profile.displayName !== '') {
+    return profile.displayName
+  } else if (profile.realName !== '') {
+    return profile.realName
+  }
+
+  return ''
+}
+
+/**
  * Get the user name.
  * @param message Message.
  * @param user User.
@@ -150,12 +166,7 @@ const getName = (message: Message, user: User | undefined): string => {
 
   // From the user information if not in the message
   if (user) {
-    const profile = user.profile
-    if (profile.displayName !== '') {
-      return profile.displayName
-    } else if (profile.realName !== '') {
-      return profile.realName
-    }
+    return getNameFromUser(user)
   }
 
   // May be an Exception

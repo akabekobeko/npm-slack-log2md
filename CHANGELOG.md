@@ -1,5 +1,17 @@
 # ChangeLog
 
+## v1.0.2
+
+### Changes
+
+- Generate log index markdown [#15](https://github.com/akabekobeko/npm-slack-log2md/issues/15)
+- Emoji support [#10](https://github.com/akabekobeko/npm-slack-log2md/issues/10)
+
+### Fixes
+
+- The channel in the message is not replaced [#17](https://github.com/akabekobeko/npm-slack-log2md/issues/17)
+- User in the message is always the speaker [#16](https://github.com/akabekobeko/npm-slack-log2md/issues/16)
+
 ## v1.0.1
 
 ### Changes

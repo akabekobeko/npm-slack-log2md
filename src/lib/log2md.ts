@@ -157,14 +157,27 @@ const convertChannelMessages = async (
     await mkdirAsync(dest)
   }
 
-  const filePaths = await enumMessageJSONs(src)
+  // Sort in descending order for index page, log conversion does not depend on the order
+  const filePaths = (await enumMessageJSONs(src)).sort((a, b) =>
+    a === b ? 0 : a < b ? 1 : -1
+  )
+
+  let indexMd = ''
   for (const filePath of filePaths) {
     const messages = await readMessages(filePath)
-    const logName = path.basename(filePath, '.json')
     const body = messagesToMarkdown(messages, channels, users)
+    const logName = path.basename(filePath, '.json')
     const markdown = `# ${logName}\n\n|Time|Icon|Name|Message|\n|---|---|---|---|\n${body}`
     const destFilePath = path.join(dest, `${logName}.md`)
     await writeFileASync(destFilePath, markdown)
+
+    indexMd += `- [${logName}](./${logName}.md)\n`
+  }
+
+  // Index page
+  if (indexMd !== '') {
+    const destFilePath = path.join(dest, 'index.md')
+    await writeFileASync(destFilePath, `# ${path.basename(src)}\n\n${indexMd}`)
   }
 }
 

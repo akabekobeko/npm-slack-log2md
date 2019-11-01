@@ -28,15 +28,16 @@ The generated Markdown file has the following format.
 |---|---|---|---|
 |13:43|![](https://example.com/test/72.png)|test|`@test` has joined the channel|
 |07:02|![](https://example.com/test/72.png)|test|`@test` `#general` Sample message<br>Sample<br><br>Sample|
-|07:02|![](https://example.com/bot/72.png)|Sample Bot|:flag-gb::  Sample message.|
+|07:02|![](https://example.com/bot/72.png)|Sample Bot|🇬🇧: Sample message.|
 ```
 
-- The message is output as a `<table>`
+- The message is output as a `<table>`.
 - If a profile image is set for the user, the URL is referenced and displayed.
-- The user will use the display name if there is one, otherwise it will be the account name
-- The time is always UTC
+- The user will use the display name if there is one, otherwise it will be the account name.
+- The time is always UTC.
 - `@user` and `#channel` in the body text enclose the target name in `<code>` tag.
-- Line breaks `\n` in the body text are converted to `<br>` tags
+- Emoji code (e.g. `:smile:`, `:flag-gb:`, ...etc)  is converted to the corresponding Unicode character.
+- Line breaks `\n` in the body text are converted to `<br>` tags.
 
 ### CLI
 
