@@ -2,6 +2,7 @@ import { Message } from './message'
 import { Channel } from './channel'
 import { User } from './user'
 import getMetadata from './metadata'
+import emoji from './emoji'
 
 /**
  * Create the markdown.of the message body.
@@ -36,6 +37,13 @@ const createBody = (
     }
 
     return `\`@${$1}\``
+  })
+
+  // Emoji `:flag-gb:`
+  body = body.replace(/\:["']?([a-zA-Z0-9_\-]+)["']?\:/g, (match) => {
+    // On Slack `-` but the short name is` _`, e.g. `:flag-gb:` -> `:flag_gb:`
+    const str = match.replace('-', '_')
+    return emoji.shortnameToUnicode(str)
   })
 
   // Line break
