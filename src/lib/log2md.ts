@@ -165,9 +165,9 @@ const convertChannelMessages = async (
   let indexMd = ''
   for (const filePath of filePaths) {
     const messages = await readMessages(filePath)
-    const body = messagesToMarkdown(messages, channels, users)
+    const table = messagesToMarkdown(messages, channels, users)
     const logName = path.basename(filePath, '.json')
-    const markdown = `# ${logName}\n\n|Time|Icon|Name|Message|\n|---|---|---|---|\n${body}`
+    const markdown = `# ${logName}\n\n${table}`
     const destFilePath = path.join(dest, `${logName}.md`)
     await writeFileASync(destFilePath, markdown)
 

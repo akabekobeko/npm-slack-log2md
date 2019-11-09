@@ -58,5 +58,25 @@
     "ts": "1570172545.014700",
     "username": "Sample Bot",
     "bot_id": "BOTID"
+  },
+  {
+    "client_msg_id": "363953ac-f635-4cfa-99f3-80f87b04a9cc",
+    "type": "message",
+    "text": "Quote: \n&gt; Sample\n&gt;Text\nPlease read the above.",
+    "user": "USERID",
+    "ts": "1570202544.012700",
+    "team": "TEAMID",
+    "user_team": "TEAMID",
+    "source_team": "TEAMID"
+  },
+  {
+    "client_msg_id": "363953ac-f635-5cfa-99f3-70f87b04a9cc",
+    "type": "message",
+    "text": "Code: \n```\nconst value = 'code';\nconsole.log(value);\n```\nPlease read the above.",
+    "user": "USERID",
+    "ts": "1570212554.014000",
+    "team": "TEAMID",
+    "user_team": "TEAMID",
+    "source_team": "TEAMID"
   }
 ]
