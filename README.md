@@ -29,15 +29,19 @@ The generated Markdown file has the following format.
 |13:43|![](https://example.com/test/72.png)|test|`@test` has joined the channel|
 |07:02|![](https://example.com/test/72.png)|test|`@test` `#general` Sample message<br>Sample<br><br>Sample|
 |07:02|![](https://example.com/bot/72.png)|Sample Bot|🇬🇧: Sample message.|
+|15:22|![](https://example.com/test/72.png)|test|Quote: <br><blockquote>Sample<br>Text</blockquote>Please read the above.|
+|18:09|![](https://example.com/test/72.png)|test|Code: <br><pre>const value = 'code';<br>console.log(value);</pre><br>Please read the above.|
 ```
 
-- The message is output as a `<table>`.
+- The message is output as a `<table>` tag.
 - If a profile image is set for the user, the URL is referenced and displayed.
 - The user will use the display name if there is one, otherwise it will be the account name.
 - The time is always UTC.
-- `@user` and `#channel` in the body text enclose the target name in `<code>` tag.
+- `@user` and `#channel` in the body text enclose the target name in `<code>` tags.
 - Emoji code (e.g. `:smile:`, `:flag-gb:`, ...etc)  is converted to the corresponding Unicode character.
-- Line breaks `\n` in the body text are converted to `<br>` tags.
+- Convert line breaks `\n` to `<br>` tags.
+- Convert quotes (`> text`, `&gt; text` on log) to `<blockquote>` tags.
+- Convert code block to `<pre>` tags.
 
 ### CLI
 

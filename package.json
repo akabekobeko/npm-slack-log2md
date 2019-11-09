@@ -1,7 +1,7 @@
 {
   "name": "slack-log2md",
   "description": "Slack log file (JSON) to Markdown.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "akabeko (http://akabeko.me/)",
   "license": "MIT",
   "homepage": "https://github.com/akabekobeko/npm-slack-log2md#readme",

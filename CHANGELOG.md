@@ -1,5 +1,12 @@
 # ChangeLog
 
+## v1.0.3
+
+### Changes
+
+- Support the code block [#23](https://github.com/akabekobeko/npm-slack-log2md/issues/23)
+- Support the blockquote [#22](https://github.com/akabekobeko/npm-slack-log2md/issues/22)
+
 ## v1.0.2
 
 ### Changes
