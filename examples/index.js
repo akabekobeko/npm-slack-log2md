@@ -3,7 +3,11 @@ const slackLog2Md = require('slack-log2md')
 const options = {
   input: './data',
   output: './dest',
-  report: true
+  report: true,
+  groupingSameDayByUTC: true,
+  ignore: {
+    channelLogin: true
+  }
 }
 
 slackLog2Md(options).catch((err) => {

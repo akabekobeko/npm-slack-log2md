@@ -6,6 +6,7 @@ import parseUser, { User } from './user'
 import parseMessage, { Message } from './message'
 import messagesToMarkdown from './markdown'
 import Logger from './logger'
+import { tsToDate, formatDate } from './metadata'
 
 const readFileAsync = util.promisify(fs.readFile)
 const readdirAsync = util.promisify(fs.readdir)
@@ -13,15 +14,25 @@ const writeFileASync = util.promisify(fs.writeFile)
 const statAsync = util.promisify(fs.stat)
 const mkdirAsync = util.promisify(fs.mkdir)
 
+/** Message types to ignore. */
+export type IgnoreMessage = {
+  /** `true` to ignore the channel login message. */
+  channelLogin?: boolean
+}
+
 /** Options of slack-log2md. */
-export type Options = {
-  /** Directory path of the JSON file exported from Slack. */
-  input: string
+export type Log2MdOptions = {
+  /** `true` to display the processing status of the tool to `stdout`. */
+  report?: boolean
+
   /**
-   * Directory path to output Markdown file converted from JSON.
-   * If a nonexistent directory is specified, the same location as `input` is selected.
+   * `true` if messages in the channel are grouped by the same day in UTC.
+   * If `false`, the group is the output log file unit.
    */
-  output: string
+  groupingSameDayByUTC?: boolean
+
+  /** Specifies the type of message to ignore. */
+  ignore?: IgnoreMessage
 }
 
 /**
@@ -140,17 +151,98 @@ export const readMessages = async (filePath: string): Promise<Message[]> => {
 }
 
 /**
+ * Check if the message should be ignored.
+ * @param message Message.
+ * @param ignore Message types of ignore.
+ * @returns `true` if it should be ignored.
+ */
+const isIgnore = (message: Message, ignore: IgnoreMessage): boolean => {
+  if (ignore.channelLogin) {
+    return message.subtype === 'channel_join'
+  }
+
+  return false
+}
+
+/**
+ * Convert messages in the channel to Markdown by same day (UTC).
+ * @param src Path of the channel directory.
+ * @param dest Path of the output directory.
+ * @param channels Dictionary (id/cnannel) of the channels.
+ * @param users Dictionary (id/user) of the users.
+ * @param ignore Message types to ignore.
+ */
+const convertChannelMessagesSameDay = async (
+  src: string,
+  dest: string,
+  channels: Map<string, Channel>,
+  users: Map<string, User>,
+  ignore: IgnoreMessage
+) => {
+  // Create a sub directory for each channel
+  if (!fs.existsSync(dest)) {
+    await mkdirAsync(dest)
+  }
+
+  // Group messages in a channel on the same day (UTC).
+  const filePaths = await enumMessageJSONs(src)
+  const logs = new Map<string, Message[]>()
+  for (const filePath of filePaths) {
+    const messages = await readMessages(filePath)
+    for (const message of messages) {
+      if (isIgnore(message, ignore)) {
+        continue
+      }
+
+      const date = formatDate(tsToDate(message.timeStamp), 'YYYY-MM-DD', true)
+      const targets = logs.get(date)
+      if (targets) {
+        targets.push(message)
+      } else {
+        logs.set(date, [message])
+      }
+    }
+  }
+
+  // Output markdown
+  let logNames: string[] = []
+  for (const logName of logs.keys()) {
+    const messages = logs.get(logName)!
+    const table = messagesToMarkdown(messages, channels, users)
+    const markdown = `# ${logName}\n\n${table}`
+    const destFilePath = path.join(dest, `${logName}.md`)
+    await writeFileASync(destFilePath, markdown)
+
+    logNames.push(logName)
+  }
+
+  // Output index (Descending of date)
+  let indexMd = ''
+  logNames = logNames.sort((a, b) => (a === b ? 0 : a < b ? 1 : -1))
+  for (const logName of logNames) {
+    indexMd += `- [${logName}](./${logName}.md)\n`
+  }
+
+  if (indexMd !== '') {
+    const destFilePath = path.join(dest, 'index.md')
+    await writeFileASync(destFilePath, `# ${path.basename(src)}\n\n${indexMd}`)
+  }
+}
+
+/**
  * Convert messages in the channel to Markdown.
  * @param src Path of the channel directory.
  * @param dest Path of the output directory.
  * @param channels Dictionary (id/cnannel) of the channels.
  * @param users Dictionary (id/user) of the users.
+ * @param ignore Message types to ignore.
  */
 const convertChannelMessages = async (
   src: string,
   dest: string,
   channels: Map<string, Channel>,
-  users: Map<string, User>
+  users: Map<string, User>,
+  ignore: IgnoreMessage
 ) => {
   // Create a sub directory for each channel
   if (!fs.existsSync(dest)) {
@@ -164,7 +256,13 @@ const convertChannelMessages = async (
 
   let indexMd = ''
   for (const filePath of filePaths) {
-    const messages = await readMessages(filePath)
+    const messages = (await readMessages(filePath)).filter(
+      (message) => !isIgnore(message, ignore)
+    )
+    if (messages.length === 0) {
+      continue
+    }
+
     const table = messagesToMarkdown(messages, channels, users)
     const logName = path.basename(filePath, '.json')
     const markdown = `# ${logName}\n\n${table}`
@@ -182,17 +280,34 @@ const convertChannelMessages = async (
 }
 
 /**
+ * Check the ignore option.
+ * @param ignore Message types of ignore.
+ * @returns Checked option.
+ */
+const checkIgnoreOption = (ignore?: IgnoreMessage): IgnoreMessage => {
+  if (ignore) {
+    return {
+      channelLogin: !!ignore.channelLogin
+    }
+  }
+
+  return {
+    channelLogin: false
+  }
+}
+
+/**
  * Converts Slack log JSON in the specified workspace directory to Markdown.
  * @param inputDir Directory path of the JSON file exported from Slack.
  * @param outputDir Directory path to output Markdown file converted from JSON.
- * @param report Display the process reports, default is disable.
+ * @param options Options.
  */
 const log2Md = async (
   inputDir: string,
   outputDir: string,
-  report: boolean = false
+  options: Log2MdOptions
 ): Promise<void> => {
-  const logger = new Logger(report)
+  const logger = new Logger(!!options.report)
   logger.log(`src: "${inputDir}"`)
   logger.log(`dest: "${outputDir}"`)
   logger.log('Converted channels...')
@@ -200,12 +315,17 @@ const log2Md = async (
   const channels = await readChannels(inputDir)
   const users = await readUsers(inputDir)
   const channelDirs = await enumChannelDirs(inputDir)
+  const ignore = checkIgnoreOption(options.ignore)
 
   for (const src of channelDirs) {
     const channel = path.basename(src)
     logger.log(`  #${channel}`)
     const dest = path.join(outputDir, channel)
-    await convertChannelMessages(src, dest, channels, users)
+    if (!!options.groupingSameDayByUTC) {
+      await convertChannelMessagesSameDay(src, dest, channels, users, ignore)
+    } else {
+      await convertChannelMessages(src, dest, channels, users, ignore)
+    }
   }
 
   logger.log('Completed!!')
