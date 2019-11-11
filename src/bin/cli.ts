@@ -20,6 +20,11 @@ export const parseArgv = (argv: string[]): Options => {
       'Directory path to output Markdown file converted from JSON.'
     )
     .option('-r, --report', 'Display the process reports, default is disable.')
+    .option(
+      '--grouping-same-day-by-utc',
+      'Output Markdown grouped on the same day as UTC date.'
+    )
+    .option('--ignore-channel-login', 'Ignore channel login messages.')
     .version(require('../../package.json').version, '-v, --version')
 
   program.on('--help', () => {
@@ -42,7 +47,11 @@ See also:
   return {
     input: opts.input,
     output: opts.output,
-    report: opts.report
+    report: opts.report,
+    groupingSameDayByUTC: !!opts.groupingSameDayByUtc,
+    ignore: {
+      channelLogin: opts.ignoreChannelLogin
+    }
   }
 }
 

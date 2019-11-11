@@ -51,11 +51,13 @@ Usage:  slack-log2md [options]
 Slack log file (JSON) to Markdown file.
 
 Options:
-  -i, --input <Path>   Directory path of the JSON file exported from Slack.
-  -o, --output <Path>  Directory path to output Markdown file converted from JSON.
-  -r, --report         Display the process reports, default is disable.
-  -v, --version        output the version number
-  -h, --help           output usage information
+  -i, --input <Path>          Directory path of the JSON file exported from Slack.
+  -o, --output <Path>         Directory path to output Markdown file converted from JSON.
+  -r, --report                Display the process reports, default is disable.
+  --grouping-same-day-by-utc  Output Markdown grouped on the same day as UTC date.
+  --ignore-channel-login      Ignore channel login messages.
+  -v, --version               output the version number
+  -h, --help                  output usage information
 
 Examples:
   $ slack-log2md -i ./logs -o ./dist -r
@@ -72,11 +74,13 @@ Converts Slack log JSON in the specified workspace directory to Markdown.
 
 Options:
 
-|Property|Type|Description|
-|---|---|---|
-|src|`String`|Directory path of log file exported from Slack.|
-|dest|`String`|Directory path to output Markdown file converted from log. If a nonexistent directory is specified, the same location as `input` is selected.|
-|report|`Boolean`|`true` to display the processing status of the tool to `stdout`.|
+|Property|Type|Default|Description|
+|---|---|---|---|
+|src|`String`||Directory path of log file exported from Slack.|
+|dest|`String`||Directory path to output Markdown file converted from log. If a nonexistent directory is specified, the same location as `input` is selected.|
+|report|`Boolean`|`false`|`true` to display the processing status of the tool to `stdout`.|
+|groupingSameDayByUTC|`Boolean`|`false`|`true` if messages in the channel are grouped by the same day in UTC. If `false`, the group is the output log file unit.|
+|ignore.channelLogin|`Boolean`|`false`|Specifies the type of message to ignore.|
 
 Sample code:
 
@@ -86,7 +90,11 @@ const slackLog2Md = require('slack-log2md');
 const options = {
   input: './data',
   output: './dest',
-  report: true
+  report: true,
+  groupingSameDayByUTC: true,
+  ignore: {
+    channelLogin: true
+  }
 };
 
 slackLog2Md(options).catch((err) => {

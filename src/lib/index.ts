@@ -1,9 +1,9 @@
 import fs from 'fs'
 import util from 'util'
-import log2md from './log2md'
+import log2md, { Log2MdOptions } from './log2md'
 
 /** Options of slack-log2md. */
-export type Options = {
+export type Options = Log2MdOptions & {
   /** Directory path of the JSON file exported from Slack. */
   input: string
   /**
@@ -11,9 +11,6 @@ export type Options = {
    * If a nonexistent directory is specified, the same location as `input` is selected.
    */
   output: string
-
-  /** `true` to display the processing status of the tool to `stdout`. */
-  report: boolean
 }
 
 /**
@@ -49,7 +46,7 @@ const checkOptions = async (options: Options) => {
  */
 const slackLog2Md = async (options: Options): Promise<void> => {
   const opts = await checkOptions(options)
-  return log2md(opts.input, opts.output, opts.report)
+  return log2md(opts.input, opts.output, opts)
 }
 
 export default slackLog2Md

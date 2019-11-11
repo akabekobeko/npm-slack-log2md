@@ -1,9 +1,13 @@
-import slackLog2Md from 'slack-log2md'
+import slackLog2Md, { Options } from 'slack-log2md'
 
-const options = {
-  input: './data',
+const options: Options = {
+  input: './vivlio',
   output: './dest',
-  report: true
+  report: true,
+  groupingSameDayByUTC: true,
+  ignore: {
+    channelLogin: true
+  }
 }
 
 slackLog2Md(options).catch((err) => {

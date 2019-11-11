@@ -18,7 +18,7 @@ export type Metadata = {
  * @returns Formatted string.
  * @see http://qiita.com/osakanafish/items/c64fe8a34e7221e811d0
  */
-const formatDate = (
+export const formatDate = (
   date: Date = new Date(),
   format: string = 'YYYY-MM-DD hh:mm:ss.SSS',
   isUTC: boolean = false
@@ -101,7 +101,7 @@ const formatDate = (
  * @param ts Slack taimestamp (`ts` series).
  * @returns `Date` by JavaScript.
  */
-const tsToDate = (ts: string): Date => {
+export const tsToDate = (ts: string): Date => {
   return new Date(Number(ts) * 1000)
 }
 
