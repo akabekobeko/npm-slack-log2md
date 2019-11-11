@@ -1,5 +1,14 @@
 # ChangeLog
 
+## v1.1.0
+
+### Changes
+
+Added options to support these features. See README or CLI help for details.
+
+- Exclude a channel_login [#26](https://github.com/akabekobeko/npm-slack-log2md/issues/26)
+- Output Markdown in UTC date/time units [#25](https://github.com/akabekobeko/npm-slack-log2md/issues/25)
+
 ## v1.0.3
 
 ### Changes
