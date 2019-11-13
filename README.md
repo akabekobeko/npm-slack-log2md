@@ -31,6 +31,8 @@ The generated Markdown file has the following format.
 |07:02|![](https://example.com/bot/72.png)|Sample Bot|🇬🇧: Sample message.|
 |15:22|![](https://example.com/test/72.png)|test|Quote: <br><blockquote>Sample<br>Text</blockquote>Please read the above.|
 |18:09|![](https://example.com/test/72.png)|test|Code: <br><pre>const value = 'code';<br>console.log(value);</pre><br>Please read the above.|
+|18:09|![](https://example.com/test/72.png)|test|Files.<br>https://example.com/files/sample.jpg<br>https://example.com/files/sample.md|
+|18:09|![](https://example.com/test/72.png)|test|Sample.<br>Pre-text<blockquote>[sample/example] Text</blockquote><br><blockquote><!here> Text</blockquote>|
 ```
 
 - The message is output as a `<table>` tag.

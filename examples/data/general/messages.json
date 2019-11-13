@@ -78,5 +78,43 @@
     "team": "TEAMID",
     "user_team": "TEAMID",
     "source_team": "TEAMID"
+  },
+  {
+    "client_msg_id": "363953a4-f635-5cfa-99f3-70f87b04a9cc",
+    "type": "message",
+    "text": "Files.",
+    "user": "USERID",
+    "ts": "1570212554.017000",
+    "team": "TEAMID",
+    "user_team": "TEAMID",
+    "source_team": "TEAMID",
+    "files":[
+      {
+        "permalink": "https:\/\/example.com\/files\/sample.jpg"
+      },
+      {
+        "permalink": "https:\/\/example.com\/files\/sample.md"
+      }
+    ]
+  },
+  {
+    "client_msg_id": "363953ac-f635-4444-99f3-70f87b04a9cc",
+    "type": "message",
+    "text": "Sample.",
+    "user": "USERID",
+    "ts": "1570212554.014000",
+    "team": "TEAMID",
+    "user_team": "TEAMID",
+    "source_team": "TEAMID",
+    "attachments": [
+      {
+        "fallback": "[sample\/example] Text",
+        "pretext": "Pre-text"
+      },
+      {
+        "fallback": "[October 20th, 2019 11:29 AM] test: <!here> Text",
+        "text": "<!here> Text"
+      }
+    ]
   }
 ]

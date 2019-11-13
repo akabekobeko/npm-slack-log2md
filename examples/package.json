@@ -11,7 +11,7 @@
     "ts": "ts-node index.ts"
   },
   "dependencies": {
-    "slack-log2md": "1.1.0",
+    "slack-log2md": "1.2.0",
     "ts-node": "^8.5.0",
     "typescript": "^3.7.2"
   }

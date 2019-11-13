@@ -1,3 +1,5 @@
+import { unescapeStr } from './metadata'
+
 /** User profile. */
 export type Profile = {
   /** ? */
@@ -98,15 +100,6 @@ export type User = {
   isAppUser: boolean
   /** Date and time when user information was updated (UNIX Timestamp). */
   updated: number
-}
-
-/**
- * Remove backslash escaping from string. e.g. `https:\/\/secure.gravatar.com\/avatar\/`
- * @param str URL.
- * @returns Unescaped string.
- */
-const unescapeStr = (str: string) => {
-  return str.replace('\\', '')
 }
 
 /**

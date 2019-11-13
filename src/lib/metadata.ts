@@ -143,6 +143,15 @@ export const getNameFromUser = (user: User): string => {
 }
 
 /**
+ * Remove backslash escaping from string. e.g. `https:\/\/secure.gravatar.com\/avatar\/`
+ * @param str URL.
+ * @returns Unescaped string.
+ */
+export const unescapeStr = (str: string) => {
+  return str.replace('\\', '')
+}
+
+/**
  * Get the user name.
  * @param message Message.
  * @param user User.
