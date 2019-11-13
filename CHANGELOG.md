@@ -1,5 +1,12 @@
 # ChangeLog
 
+## v1.2.0
+
+### Changes
+
+- Support the files [#21](https://github.com/akabekobeko/npm-slack-log2md/issues/21)
+- Support the attachments [#20](https://github.com/akabekobeko/npm-slack-log2md/issues/20)
+
 ## v1.1.0
 
 ### Changes
