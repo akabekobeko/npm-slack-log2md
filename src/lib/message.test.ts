@@ -67,4 +67,32 @@ describe('parseMessage', () => {
     expect(message.text).toBe(':flag-gb::  Sample message.')
     expect(message.botId).toBe('BOTID')
   })
+
+  it('Files', () => {
+    const message = parseMessage(values[5])
+    expect(message.files.length).toBe(2)
+    expect(message.files[0]!.permalink).toBe(
+      'https://example.com/files/sample.jpg'
+    )
+    expect(message.files[1]!.permalink).toBe(
+      'https://example.com/files/sample.md'
+    )
+  })
+
+  it('Attachement', () => {
+    const message = parseMessage(values[6])
+    expect(message.attachments.length).toBe(2)
+
+    let attachment = message.attachments[0]
+    expect(attachment.pretext).toBe('Pre-text')
+    expect(attachment.fallback).toBe('[sample/example] Text')
+    expect(attachment.text).toBe('')
+
+    attachment = message.attachments[1]
+    expect(attachment.pretext).toBe('')
+    expect(attachment.fallback).toBe(
+      '[October 20th, 2019 11:29 AM] test: <!here> Text'
+    )
+    expect(attachment.text).toBe('<!here> Text')
+  })
 })

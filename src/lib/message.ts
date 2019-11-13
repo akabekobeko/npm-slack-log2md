@@ -38,6 +38,29 @@ export type UserProfile = {
   isUltraRestricted: boolean
 }
 
+/**
+ * An attached files to the message.
+ * It actually has a lot of properties, but it is limited to what is needed as a message.
+ */
+export type File = {
+  /** Permanent link for the file. */
+  permalink: string
+}
+
+/**
+ * An attached messages to the message.
+ * It actually has a lot of properties, but it is limited to what is needed as a message.
+ * @see https://api.slack.com/docs/message-attachments
+ */
+export type Attachement = {
+  /** A plain-text summary of the attachment. This text will be used in clients that don't show formatted text (eg. IRC, mobile notifications) and should not contain any markup. */
+  fallback: string
+  /** This is optional text that appears above the message attachment block. */
+  pretext: string
+  /** This is the main text in a message attachment, and can contain standard message markup. */
+  text: string
+}
+
 /** Message on channel. */
 export type Message = {
   /**  Identifier of the user who posted the message. */
@@ -50,6 +73,14 @@ export type Message = {
   timeStamp: string
   /** Message body text. Replaced special links: Channel = `<#CHANNELID>`, User = `<@USERID>`, Link = `<URL>`. */
   text: string
+  /** Reactions to the message. */
+  reactions: Reaction[]
+  /** Replies to the message. */
+  replies: Reply[]
+  /** An attached files to the message */
+  files: File[]
+  /** An attached messages to the message */
+  attachments: Attachement[]
   /** Purpose text. Replaced special links. */
   purpose?: string
   /** Identifier of client message (UUID?). JSON: 'client_msg_id'. */
@@ -68,8 +99,6 @@ export type Message = {
   username?: string
   /** Identifier of Slack bot. JSON: `bot_id`. */
   botId?: string
-  /** Reactions to the message. */
-  reactions?: Reaction[]
   /** Number of the reply. JSON: `reply_count`. */
   replyCount?: number
   /** Number of the reply user. JSON: `reply_users_count`. */
@@ -78,8 +107,6 @@ export type Message = {
   latestReply?: string
   /** Reply users. JSON: `reply_users`. */
   replyUsers?: string[]
-  /** Replies to the message. */
-  replies?: Reply[]
   /** The message posting date and time (UNIX Timestamp) of the thread with which the message is associated. e.g. `1569458609.000200`. JSON: `thread_ts`. */
   threadTimeStamp?: string
   /** Identifier of the parent user. JSON: `parent_user_id`. */
@@ -143,6 +170,48 @@ const parseReplies = (obj: any): Reply[] => {
 }
 
 /**
+ * Parse an attached files by message.
+ * @param obj Object of the array value.
+ * @returns Files.
+ */
+const parseFiles = (obj: any): File[] => {
+  const files: File[] = []
+  if (!Array.isArray(obj)) {
+    return files
+  }
+
+  for (const value of obj) {
+    files.push({
+      permalink: value.permalink || ''
+    })
+  }
+
+  return files
+}
+
+/**
+ * Parse an attached messages by message.
+ * @param obj Object of the array value.
+ * @returns Attachements.
+ */
+const parseAttachements = (obj: any): Attachement[] => {
+  const attachements: Attachement[] = []
+  if (!Array.isArray(obj)) {
+    return attachements
+  }
+
+  for (const value of obj) {
+    attachements.push({
+      fallback: value.fallback || '',
+      pretext: value.pretext || '',
+      text: value.text || ''
+    })
+  }
+
+  return attachements
+}
+
+/**
  * Parse an user profile by message.
  * @param obj Object of the message value.
  * @returns User profile.
@@ -173,6 +242,10 @@ const parseMessage = (obj: any): Message => {
     subtype: obj.subtype || '',
     timeStamp: obj.ts || '',
     text: obj.text || '',
+    reactions: parseReactions(obj.reactions),
+    replies: parseReplies(obj.replies),
+    files: parseFiles(obj.files),
+    attachments: parseAttachements(obj.attachments),
     purpose: obj.purpose,
     clientMessageId: obj.client_msg_id,
     team: obj.team,
@@ -184,12 +257,10 @@ const parseMessage = (obj: any): Message => {
     inviter: obj.inviter,
     username: obj.username,
     botId: obj.bot_id,
-    reactions: obj.reactions ? parseReactions(obj.reactions) : obj.reactions,
     replyCount: obj.reply_count,
     replyUsersCount: obj.reply_users_count,
     latestReply: obj.latest_reply,
     replyUsers: obj.reply_users,
-    replies: obj.replies ? parseReplies(obj.replies) : obj.replies,
     threadTimeStamp: obj.thread_ts,
     parentUserId: obj.parent_user_id,
     subscribed: obj.subscribed,

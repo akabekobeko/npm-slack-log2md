@@ -1,7 +1,7 @@
-import { Message } from './message'
+import { Message, File, Attachement } from './message'
 import { Channel } from './channel'
 import { User } from './user'
-import getMetadata, { getNameFromUser } from './metadata'
+import getMetadata, { getNameFromUser, unescapeStr } from './metadata'
 import emoji from './emoji'
 
 /**
@@ -92,8 +92,94 @@ const replaceLineBreak = (text: string): string => {
 }
 
 /**
+ * Replace any data for the message body text.
+ * @param text Text.
+ * @param channels Channels.
+ * @param users Users.
+ * @returns Replaced text.
+ */
+const replaceBody = (
+  text: string,
+  channels: Map<string, Channel>,
+  users: Map<string, User>
+): string => {
+  text = replaceUserId(text, users)
+  text = replaceChannelId(text, channels)
+  text = replaceEmoji(text)
+  text = replaceBlockquote(text)
+  text = replacePre(text)
+  text = replaceLineBreak(text)
+
+  return text
+}
+
+/**
+ * Create the markdown of file links.
+ * @param files An attached files for message.
+ * @returns Markdown text. Empty string if file does not exist.
+ */
+const createFileLinks = (files: File[]): string => {
+  if (files.length === 0) {
+    return ''
+  }
+
+  let links = `${unescapeStr(files[0].permalink)}`
+  for (let i = 1; i < files.length; ++i) {
+    links += `<br>${unescapeStr(files[i].permalink)}`
+  }
+
+  return links
+}
+
+const createAttachementValue = (
+  attachement: Attachement,
+  channels: Map<string, Channel>,
+  users: Map<string, User>
+): string => {
+  let text = attachement.pretext
+  if (attachement.text) {
+    // `text` is markdown
+    text += `<blockquote>${replaceBody(
+      attachement.text,
+      channels,
+      users
+    )}</blockquote>`
+  } else if (attachement.fallback) {
+    // `fallback` is plain text, but escaped the backslash
+    text += `<blockquote>${unescapeStr(attachement.fallback)}</blockquote>`
+  }
+
+  return text
+}
+
+/**
+ * Create an attachement text.
+ * @param attachements Attachements.
+ * @param channels Channnels.
+ * @param users Users.
+ * @returns Markdown text.
+ */
+const createAttachement = (
+  attachements: Attachement[],
+  channels: Map<string, Channel>,
+  users: Map<string, User>
+): string => {
+  if (attachements.length === 0) {
+    return ''
+  }
+
+  let text = createAttachementValue(attachements[0], channels, users)
+  for (let i = 1; i < attachements.length; ++i) {
+    text += `<br>${createAttachementValue(attachements[i], channels, users)}`
+  }
+
+  return text
+}
+
+/**
  * Create the markdown.of the message table body.
  * @param message Message.
+ * @param channels Channels.
  * @param users Users.
  * @returns Header markdown.
  */
@@ -103,14 +189,25 @@ const createBody = (
   users: Map<string, User>
 ): string => {
   // Target the copy so as not to destroy the arguments
-  let body = message.text
+  let body = replaceBody(message.text, channels, users)
 
-  body = replaceUserId(body, users)
-  body = replaceChannelId(body, channels)
-  body = replaceEmoji(body)
-  body = replaceBlockquote(body)
-  body = replacePre(body)
-  body = replaceLineBreak(body)
+  const links = createFileLinks(message.files)
+  if (links !== '') {
+    if (body === '') {
+      body = links
+    } else {
+      body += `<br>${links}`
+    }
+  }
+
+  const attachement = createAttachement(message.attachments, channels, users)
+  if (attachement !== '') {
+    if (body === '') {
+      body = attachement
+    } else {
+      body += `<br>${attachement}`
+    }
+  }
 
   return body
 }
