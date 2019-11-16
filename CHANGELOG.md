@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.3.0
+
+### Changes
+
+- Support GitHub Wiki [#29](https://github.com/akabekobeko/npm-slack-log2md/issues/29)
+
 ## v1.2.0
 
 ### Changes
