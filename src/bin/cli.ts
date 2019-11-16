@@ -24,6 +24,10 @@ export const parseArgv = (argv: string[]): Options => {
       '--grouping-same-day-by-utc',
       'Output Markdown grouped on the same day as UTC date.'
     )
+    .option(
+      '--github-wiki',
+      'Support output for GitHub Wiki. e.g. `general/2019-11-16.md` -> `slack-general-2019-11-16.md`'
+    )
     .option('--ignore-channel-login', 'Ignore channel login messages.')
     .version(require('../../package.json').version, '-v, --version')
 
@@ -49,6 +53,7 @@ See also:
     output: opts.output,
     report: opts.report,
     groupingSameDayByUTC: !!opts.groupingSameDayByUtc,
+    githubWiki: !!opts.githubWiki,
     ignore: {
       channelLogin: opts.ignoreChannelLogin
     }

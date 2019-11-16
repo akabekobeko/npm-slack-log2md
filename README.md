@@ -57,6 +57,7 @@ Options:
   -o, --output <Path>         Directory path to output Markdown file converted from JSON.
   -r, --report                Display the process reports, default is disable.
   --grouping-same-day-by-utc  Output Markdown grouped on the same day as UTC date.
+  --github-wiki               Support output for GitHub Wiki. e.g. `general/2019-11-16.md` -> `slack-general-2019-11-16.md`
   --ignore-channel-login      Ignore channel login messages.
   -v, --version               output the version number
   -h, --help                  output usage information
@@ -82,6 +83,7 @@ Options:
 |dest|`String`||Directory path to output Markdown file converted from log. If a nonexistent directory is specified, the same location as `input` is selected.|
 |report|`Boolean`|`false`|`true` to display the processing status of the tool to `stdout`.|
 |groupingSameDayByUTC|`Boolean`|`false`|`true` if messages in the channel are grouped by the same day in UTC. If `false`, the group is the output log file unit.|
+|githubWiki|`Boolean`|`false`|`true` if support output for GitHub Wiki. Single directory, all file names are unique, avoid conflicts with existing page names. e.g. `general/2019-11-16.md` -> `slack-general-2019-11-16.md`.|
 |ignore.channelLogin|`Boolean`|`false`|Specifies the type of message to ignore.|
 
 Sample code:
