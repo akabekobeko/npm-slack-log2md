@@ -1,7 +1,7 @@
 import slackLog2Md, { Options } from 'slack-log2md'
 
 const options: Options = {
-  input: './vivlio',
+  input: './data',
   output: './dest',
   report: true,
   groupingSameDayByUTC: true,
