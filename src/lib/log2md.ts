@@ -31,6 +31,13 @@ export type Log2MdOptions = {
    */
   groupingSameDayByUTC?: boolean
 
+  /**
+   * Support output for GitHub Wiki.
+   * Single directory, all file names are unique, avoid conflicts with existing page names.
+   * e.g. `general/2019-11-16.md` -> `slack-general-2019-11-16.md`
+   */
+  githubWiki?: boolean
+
   /** Specifies the type of message to ignore. */
   ignore?: IgnoreMessage
 }
@@ -165,19 +172,36 @@ const isIgnore = (message: Message, ignore: IgnoreMessage): boolean => {
 }
 
 /**
+ * Create the log file name.
+ * @param channlenName Channel name.
+ * @param logName log name.
+ * @param githubWiki Support the GitHub Wiki.
+ * @returns Log file name.
+ */
+const createLogFileName = (
+  channlenName: string,
+  logName: string,
+  githubWiki: boolean
+) => {
+  return githubWiki ? `slack-${channlenName}-${logName}` : logName
+}
+
+/**
  * Convert messages in the channel to Markdown by same day (UTC).
  * @param src Path of the channel directory.
  * @param dest Path of the output directory.
+ * @param channelName Channel name.
  * @param channels Dictionary (id/cnannel) of the channels.
  * @param users Dictionary (id/user) of the users.
- * @param ignore Message types to ignore.
+ * @param options Options.
  */
 const convertChannelMessagesSameDay = async (
   src: string,
   dest: string,
+  channelName: string,
   channels: Map<string, Channel>,
   users: Map<string, User>,
-  ignore: IgnoreMessage
+  options: Log2MdOptions
 ) => {
   // Create a sub directory for each channel
   if (!fs.existsSync(dest)) {
@@ -190,7 +214,7 @@ const convertChannelMessagesSameDay = async (
   for (const filePath of filePaths) {
     const messages = await readMessages(filePath)
     for (const message of messages) {
-      if (isIgnore(message, ignore)) {
+      if (isIgnore(message, options.ignore!)) {
         continue
       }
 
@@ -205,26 +229,37 @@ const convertChannelMessagesSameDay = async (
   }
 
   // Output markdown
-  let logNames: string[] = []
+  let logNames: string[][] = []
   for (const logName of logs.keys()) {
     const messages = logs.get(logName)!
     const table = messagesToMarkdown(messages, channels, users)
     const markdown = `# ${logName}\n\n${table}`
-    const destFilePath = path.join(dest, `${logName}.md`)
+    const logFileName = createLogFileName(
+      channelName,
+      logName,
+      options.githubWiki!
+    )
+    const destFilePath = path.join(dest, `${logFileName}.md`)
     await writeFileASync(destFilePath, markdown)
 
-    logNames.push(logName)
+    // e.g. `['2019-11-16', 'slack-channel-2019-11-16']`
+    logNames.push([logName, logFileName])
   }
 
   // Output index (Descending of date)
   let indexMd = ''
   logNames = logNames.sort((a, b) => (a === b ? 0 : a < b ? 1 : -1))
   for (const logName of logNames) {
-    indexMd += `- [${logName}](./${logName}.md)\n`
+    if (options.githubWiki) {
+      indexMd += `- [[${logName[0]}|${logName[1]}]]\n`
+    } else {
+      indexMd += `- [${logName[0]}](./${logName[0]}.md)\n`
+    }
   }
 
   if (indexMd !== '') {
-    const destFilePath = path.join(dest, 'index.md')
+    const fileName = options.githubWiki ? `slack-${channelName}.md` : 'index.md'
+    const destFilePath = path.join(dest, fileName)
     await writeFileASync(destFilePath, `# ${path.basename(src)}\n\n${indexMd}`)
   }
 }
@@ -233,16 +268,18 @@ const convertChannelMessagesSameDay = async (
  * Convert messages in the channel to Markdown.
  * @param src Path of the channel directory.
  * @param dest Path of the output directory.
+ * @param channelName Channel name.
  * @param channels Dictionary (id/cnannel) of the channels.
  * @param users Dictionary (id/user) of the users.
- * @param ignore Message types to ignore.
+ * @param options Options.
  */
 const convertChannelMessages = async (
   src: string,
   dest: string,
+  channelName: string,
   channels: Map<string, Channel>,
   users: Map<string, User>,
-  ignore: IgnoreMessage
+  options: Log2MdOptions
 ) => {
   // Create a sub directory for each channel
   if (!fs.existsSync(dest)) {
@@ -257,7 +294,7 @@ const convertChannelMessages = async (
   let indexMd = ''
   for (const filePath of filePaths) {
     const messages = (await readMessages(filePath)).filter(
-      (message) => !isIgnore(message, ignore)
+      (message) => !isIgnore(message, options.ignore!)
     )
     if (messages.length === 0) {
       continue
@@ -266,34 +303,46 @@ const convertChannelMessages = async (
     const table = messagesToMarkdown(messages, channels, users)
     const logName = path.basename(filePath, '.json')
     const markdown = `# ${logName}\n\n${table}`
-    const destFilePath = path.join(dest, `${logName}.md`)
+    const logFileName = createLogFileName(
+      channelName,
+      logName,
+      options.githubWiki!
+    )
+    const destFilePath = path.join(dest, `${logFileName}.md`)
     await writeFileASync(destFilePath, markdown)
 
-    indexMd += `- [${logName}](./${logName}.md)\n`
+    if (options.githubWiki) {
+      indexMd += `- [[${logName}|${logFileName}]]\n`
+    } else {
+      indexMd += `- [${logName}](./${logName}.md)\n`
+    }
   }
 
   // Index page
   if (indexMd !== '') {
-    const destFilePath = path.join(dest, 'index.md')
+    const fileName = options.githubWiki ? `slack-${channelName}.md` : 'index.md'
+    const destFilePath = path.join(dest, fileName)
     await writeFileASync(destFilePath, `# ${path.basename(src)}\n\n${indexMd}`)
   }
 }
 
 /**
- * Check the ignore option.
- * @param ignore Message types of ignore.
- * @returns Checked option.
+ * Check options.
+ * @param options Original data.
+ * @returns Checked data.
  */
-const checkIgnoreOption = (ignore?: IgnoreMessage): IgnoreMessage => {
-  if (ignore) {
-    return {
-      channelLogin: !!ignore.channelLogin
-    }
+const checkOptions = (options: Log2MdOptions) => {
+  const opts = options
+  if (opts.ignore) {
+    opts.ignore.channelLogin = !!opts.ignore.channelLogin
+  } else {
+    opts.ignore = { channelLogin: false }
   }
 
-  return {
-    channelLogin: false
-  }
+  opts.groupingSameDayByUTC = opts.groupingSameDayByUTC
+  opts.githubWiki = !!opts.githubWiki
+
+  return opts
 }
 
 /**
@@ -315,16 +364,24 @@ const log2Md = async (
   const channels = await readChannels(inputDir)
   const users = await readUsers(inputDir)
   const channelDirs = await enumChannelDirs(inputDir)
-  const ignore = checkIgnoreOption(options.ignore)
+  const opts = checkOptions(options)
 
   for (const src of channelDirs) {
     const channel = path.basename(src)
     logger.log(`  #${channel}`)
-    const dest = path.join(outputDir, channel)
-    if (!!options.groupingSameDayByUTC) {
-      await convertChannelMessagesSameDay(src, dest, channels, users, ignore)
+
+    const dest = opts.githubWiki ? outputDir : path.join(outputDir, channel)
+    if (opts.groupingSameDayByUTC) {
+      await convertChannelMessagesSameDay(
+        src,
+        dest,
+        channel,
+        channels,
+        users,
+        opts
+      )
     } else {
-      await convertChannelMessages(src, dest, channels, users, ignore)
+      await convertChannelMessages(src, dest, channel, channels, users, opts)
     }
   }
 

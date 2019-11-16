@@ -5,6 +5,7 @@ const options: Options = {
   output: './dest',
   report: true,
   groupingSameDayByUTC: true,
+  githubWiki: false,
   ignore: {
     channelLogin: true
   }
