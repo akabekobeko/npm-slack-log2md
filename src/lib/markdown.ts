@@ -226,7 +226,7 @@ const messagesToMarkdown = (
   channels: Map<string, Channel>,
   users: Map<string, User>
 ): string => {
-  let md = '|Time|Icon|Name|Message|\n|---|---|---|---|\n'
+  let md = '|Time (UTC)|Icon|Name|Message|\n|---|---|---|---|\n'
   for (const message of messages) {
     const { time, imageURL, username } = getMetadata(message, users)
     const image = imageURL === '' ? '' : `![](${imageURL})`

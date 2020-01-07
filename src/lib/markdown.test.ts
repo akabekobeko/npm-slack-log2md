@@ -7,7 +7,7 @@ describe('messagesToMarkdown', () => {
     const users = await readUsers('./examples/data')
     const messages = await readMessages('./examples/data/general/messages.json')
     const actual = messagesToMarkdown(messages, channels, users)
-    const expexted = `|Time|Icon|Name|Message|
+    const expexted = `|Time (UTC)|Icon|Name|Message|
 |---|---|---|---|
 |13:43|![](https://example.com/test/72.png)|test|\`@test\` has joined the channel|
 |07:02|![](https://example.com/test/72.png)|test|\`@test\` \`#general\` Sample message<br>Sample<br><br>Sample|
