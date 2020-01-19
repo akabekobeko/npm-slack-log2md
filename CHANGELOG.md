@@ -1,5 +1,12 @@
 # ChangeLog
 
+## v1.4.0
+
+### Changes
+
+- Add UTC notation to the header of the Time column [#32](https://github.com/akabekobeko/npm-slack-log2md/issues/32)
+- Add unique identifier for a message [#31](https://github.com/akabekobeko/npm-slack-log2md/issues/31)
+
 ## v1.3.0
 
 ### Changes

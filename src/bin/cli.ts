@@ -6,7 +6,7 @@ import slackLog2Md, { Options } from '../lib/index'
  * @param argv Arguments of command line interface.
  * @returns Parsed options.
  */
-export const parseArgv = (argv: string[]): Options => {
+export const parseArgv = (argv: string[]) => {
   const program = new commander.Command()
   program
     .usage('slack-log2md [options]')
@@ -27,6 +27,10 @@ export const parseArgv = (argv: string[]): Options => {
     .option(
       '--github-wiki',
       'Support output for GitHub Wiki. e.g. `general/2019-11-16.md` -> `slack-general-2019-11-16.md`'
+    )
+    .option(
+      '--add-unique-message-id',
+      'Add unique identifier for a message. Set the time in the Time field to `<span id ="XXXX">21:34</span>`.'
     )
     .option('--ignore-channel-login', 'Ignore channel login messages.')
     .version(require('../../package.json').version, '-v, --version')
@@ -54,6 +58,7 @@ See also:
     report: opts.report,
     groupingSameDayByUTC: !!opts.groupingSameDayByUtc,
     githubWiki: !!opts.githubWiki,
+    addUniqueMessageId: !!opts.addUniqueMessageId,
     ignore: {
       channelLogin: opts.ignoreChannelLogin
     }
@@ -67,7 +72,7 @@ See also:
  */
 const exec = (argv: string[]): Promise<void> => {
   const options = parseArgv(argv)
-  return slackLog2Md(options)
+  return slackLog2Md(options.input, options.output, options)
 }
 
 export default exec

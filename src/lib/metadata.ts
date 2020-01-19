@@ -3,6 +3,8 @@ import { User } from './user'
 
 /** Message metadata. */
 export type Metadata = {
+  /** Unique id of message from ts, e.g. '1570175686.020000'. */
+  id: string
   /** `hh: mm` format time (UTC). */
   time: string
   /** Display name or account name of the user. */
@@ -206,6 +208,7 @@ const getImageURL = (message: Message, user: User | undefined): string => {
 const getMetadata = (message: Message, users: Map<string, User>): Metadata => {
   const user = getUser(message, users)
   return {
+    id: message.timeStamp,
     time: formatDate(tsToDate(message.timeStamp), 'hh:mm', true),
     username: getName(message, user),
     imageURL: getImageURL(message, user)
