@@ -4,6 +4,12 @@ import { User } from './user'
 import getMetadata, { getNameFromUser, unescapeStr } from './metadata'
 import emoji from './emoji'
 
+/** Options of Markdown. */
+export type MarkdownOptions = {
+  /** Add unique identifier for a message. Set the time in the Time field to `<span id ="XXXX">21:34</span>`. */
+  addUniqueMessageId: boolean
+}
+
 /**
  * Replace `<@USERID>` in text to `@ user`.
  * @param text Text.
@@ -219,19 +225,25 @@ const createBody = (
  * @param messages Messages
  * @param channels Channels
  * @param users Users
+ * @param options Options
  * @returns Markdown text.
  */
 const messagesToMarkdown = (
   messages: Message[],
   channels: Map<string, Channel>,
-  users: Map<string, User>
+  users: Map<string, User>,
+  options: MarkdownOptions
 ): string => {
   let md = '|Time (UTC)|Icon|Name|Message|\n|---|---|---|---|\n'
   for (const message of messages) {
-    const { time, imageURL, username } = getMetadata(message, users)
+    const { id, time, imageURL, username } = getMetadata(message, users)
     const image = imageURL === '' ? '' : `![](${imageURL})`
     const body = createBody(message, channels, users)
-    md += `|${time}|${image}|${username}|${body}|\n`
+    if (options.addUniqueMessageId) {
+      md += `|<span id="${id}">${time}</span>|${image}|${username}|${body}|\n`
+    } else {
+      md += `|${time}|${image}|${username}|${body}|\n`
+    }
   }
 
   return md

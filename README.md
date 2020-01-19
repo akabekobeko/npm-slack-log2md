@@ -58,6 +58,7 @@ Options:
   -r, --report                Display the process reports, default is disable.
   --grouping-same-day-by-utc  Output Markdown grouped on the same day as UTC date.
   --github-wiki               Support output for GitHub Wiki. e.g. `general/2019-11-16.md` -> `slack-general-2019-11-16.md`
+  --add-unique-message-id     Add unique identifier for a message. Set the time in the Time field to `<span id ="XXXX">21:34</span>`.
   --ignore-channel-login      Ignore channel login messages.
   -v, --version               output the version number
   -h, --help                  output usage information
@@ -71,19 +72,26 @@ See also:
 
 ### Node.js API
 
-#### slackLog2Md(options)
+#### slackLog2Md(src, dest, options)
 
 Converts Slack log JSON in the specified workspace directory to Markdown.
 
-Options:
+Parameters:
 
-|Property|Type|Default|Description|
+|Parameter|Type|Default|Description|
 |---|---|---|---|
 |src|`String`||Directory path of log file exported from Slack.|
 |dest|`String`||Directory path to output Markdown file converted from log. If a nonexistent directory is specified, the same location as `input` is selected.|
+|options|`Options`|`{}`||
+
+Options:
+
+|Parameter|Type|Default|Description|
+|---|---|---|---|
 |report|`Boolean`|`false`|`true` to display the processing status of the tool to `stdout`.|
 |groupingSameDayByUTC|`Boolean`|`false`|`true` if messages in the channel are grouped by the same day in UTC. If `false`, the group is the output log file unit.|
 |githubWiki|`Boolean`|`false`|`true` if support output for GitHub Wiki. Single directory, all file names are unique, avoid conflicts with existing page names. e.g. `general/2019-11-16.md` -> `slack-general-2019-11-16.md`.|
+|addUniqueMessageId|`Boolean`|`false`|Add unique identifier for a message. Set the time in the `Time` field to `<span id ="XXXX">21:34</span>`.|
 |ignore.channelLogin|`Boolean`|`false`|Specifies the type of message to ignore.|
 
 Sample code:
@@ -92,16 +100,16 @@ Sample code:
 const slackLog2Md = require('slack-log2md');
 
 const options = {
-  input: './data',
-  output: './dest',
   report: true,
   groupingSameDayByUTC: true,
+  githubWiki: true,
+  addUniqueMessageId: false,
   ignore: {
     channelLogin: true
   }
 };
 
-slackLog2Md(options).catch((err) => {
+slackLog2Md('./logs', './dest', options).catch((err) => {
   console.error(err)
 });
 ```
