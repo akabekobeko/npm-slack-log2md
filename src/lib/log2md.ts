@@ -70,7 +70,7 @@ const enumChannelDirs = async (rootDir: string): Promise<string[]> => {
  * @param dir Path of the channel directory.
  * @returns Collection of the JSON file paths.
  */
-const enumMessageJSONs = async (dir: string): Promise<string[]> => {
+const enumMessageJSON = async (dir: string): Promise<string[]> => {
   const items = await readdirAsync(dir)
   const results: string[] = []
 
@@ -110,7 +110,7 @@ const readArrayFromJSON = async (filePath: string): Promise<any[]> => {
 }
 
 /**
- * Read channel informations from JSON file.
+ * Read channel information from JSON file.
  * @param dir Path of JSON directory.
  * @returns Dictionary (id/channel) of the channels.
  */
@@ -129,7 +129,7 @@ export const readChannels = async (
 }
 
 /**
- * Read user informations from JSON file.
+ * Read user information from JSON file.
  * @param dir Path of JSON directory.
  * @returns Dictionary (id/user) of the users.
  */
@@ -176,17 +176,17 @@ const isIgnore = (message: Message, ignore: IgnoreMessage): boolean => {
 
 /**
  * Create the log file name.
- * @param channlenName Channel name.
+ * @param channelName Channel name.
  * @param logName log name.
  * @param githubWiki Support the GitHub Wiki.
  * @returns Log file name.
  */
 const createLogFileName = (
-  channlenName: string,
+  channelName: string,
   logName: string,
   githubWiki: boolean
 ) => {
-  return githubWiki ? `slack-${channlenName}-${logName}` : logName
+  return githubWiki ? `slack-${channelName}-${logName}` : logName
 }
 
 /**
@@ -194,7 +194,7 @@ const createLogFileName = (
  * @param src Path of the channel directory.
  * @param dest Path of the output directory.
  * @param channelName Channel name.
- * @param channels Dictionary (id/cnannel) of the channels.
+ * @param channels Dictionary (id/channel) of the channels.
  * @param users Dictionary (id/user) of the users.
  * @param options Options.
  */
@@ -212,7 +212,7 @@ const convertChannelMessagesSameDay = async (
   }
 
   // Group messages in a channel on the same day (UTC).
-  const filePaths = await enumMessageJSONs(src)
+  const filePaths = await enumMessageJSON(src)
   const logs = new Map<string, Message[]>()
   for (const filePath of filePaths) {
     const messages = await readMessages(filePath)
@@ -259,7 +259,7 @@ const convertChannelMessagesSameDay = async (
     if (options.githubWiki) {
       indexMd += `- [[${logName[0]}|${logName[1]}]]\n`
     } else {
-      indexMd += `- [${logName[0]}](./${logName[0]}.md)\n`
+      indexMd += `- [${logName[0]}](${logName[0]}.md)\n`
     }
   }
 
@@ -275,7 +275,7 @@ const convertChannelMessagesSameDay = async (
  * @param src Path of the channel directory.
  * @param dest Path of the output directory.
  * @param channelName Channel name.
- * @param channels Dictionary (id/cnannel) of the channels.
+ * @param channels Dictionary (id/channel) of the channels.
  * @param users Dictionary (id/user) of the users.
  * @param options Options.
  */
@@ -293,7 +293,7 @@ const convertChannelMessages = async (
   }
 
   // Sort in descending order for index page, log conversion does not depend on the order
-  const filePaths = (await enumMessageJSONs(src)).sort((a, b) =>
+  const filePaths = (await enumMessageJSON(src)).sort((a, b) =>
     a === b ? 0 : a < b ? 1 : -1
   )
 
@@ -323,7 +323,7 @@ const convertChannelMessages = async (
     if (options.githubWiki) {
       indexMd += `- [[${logName}|${logFileName}]]\n`
     } else {
-      indexMd += `- [${logName}](./${logName}.md)\n`
+      indexMd += `- [${logName}](${logName}.md)\n`
     }
   }
 
