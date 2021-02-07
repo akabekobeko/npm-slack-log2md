@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v1.5.0
+
+### Changes
+
+- Omit the `./` at the beginning of the relative path [#36](https://github.com/akabekobeko/npm-slack-log2md/issues/36)
+
 ## v1.4.0
 
 ### Changes
