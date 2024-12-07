@@ -1,15 +1,16 @@
+import { describe, test, expect } from 'vitest'
 import { readChannels, readUsers, readMessages } from './log2md'
 import messagesToMarkdown from './markdown'
 
 describe('messagesToMarkdown', () => {
-  it('Create markdown', async () => {
+  test('Create markdown', async () => {
     const channels = await readChannels('./examples/data')
     const users = await readUsers('./examples/data')
     const messages = await readMessages('./examples/data/general/messages.json')
     const actual = messagesToMarkdown(messages, channels, users, {
-      addUniqueMessageId: false
+      addUniqueMessageId: false,
     })
-    const expexted = `|Time (UTC)|Icon|Name|Message|
+    const expected = `|Time (UTC)|Icon|Name|Message|
 |---|---|---|---|
 |13:43|![](https://example.com/test/72.png)|test|\`@test\` has joined the channel|
 |07:02|![](https://example.com/test/72.png)|test|\`@test\` \`#general\` Sample message<br>Sample<br><br>Sample|
@@ -19,17 +20,17 @@ describe('messagesToMarkdown', () => {
 |18:09|![](https://example.com/test/72.png)|test|Files.<br>https://example.com/files/sample.jpg<br>https://example.com/files/sample.md|
 |18:09|![](https://example.com/test/72.png)|test|Sample.<br>Pre-text<blockquote>[sample/example] Text</blockquote><br><blockquote><!here> Text</blockquote>|
 `
-    expect(actual).toBe(expexted)
+    expect(actual).toBe(expected)
   })
 
-  it('With an unique identifier of message', async () => {
+  test('With an unique identifier of message', async () => {
     const channels = await readChannels('./examples/data')
     const users = await readUsers('./examples/data')
     const messages = await readMessages('./examples/data/general/messages.json')
     const actual = messagesToMarkdown(messages, channels, users, {
-      addUniqueMessageId: true
+      addUniqueMessageId: true,
     })
-    const expexted = `|Time (UTC)|Icon|Name|Message|
+    const expected = `|Time (UTC)|Icon|Name|Message|
 |---|---|---|---|
 |<span id="1569073381.002100">13:43</span>|![](https://example.com/test/72.png)|test|\`@test\` has joined the channel|
 |<span id="1570172544.014600">07:02</span>|![](https://example.com/test/72.png)|test|\`@test\` \`#general\` Sample message<br>Sample<br><br>Sample|
@@ -39,6 +40,6 @@ describe('messagesToMarkdown', () => {
 |<span id="1570212554.017000">18:09</span>|![](https://example.com/test/72.png)|test|Files.<br>https://example.com/files/sample.jpg<br>https://example.com/files/sample.md|
 |<span id="1570212554.014000">18:09</span>|![](https://example.com/test/72.png)|test|Sample.<br>Pre-text<blockquote>[sample/example] Text</blockquote><br><blockquote><!here> Text</blockquote>|
 `
-    expect(actual).toBe(expexted)
+    expect(actual).toBe(expected)
   })
 })

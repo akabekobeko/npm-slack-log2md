@@ -1,10 +1,11 @@
-import fs from 'fs'
+import { describe, test, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
 import parseUser from './user'
 
 describe('parseUser', () => {
-  it('Parse', () => {
+  test('Parse', () => {
     const values = JSON.parse(
-      fs.readFileSync('./examples/data/users.json', 'utf8')
+      readFileSync('./examples/data/users.json', 'utf8')
     ) as any[]
     const user = parseUser(values[0])
 
