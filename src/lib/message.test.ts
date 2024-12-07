@@ -1,12 +1,13 @@
-import fs from 'fs'
+import { describe, test, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
 import parseMessage from './message'
 
 describe('parseMessage', () => {
   const values = JSON.parse(
-    fs.readFileSync('./examples/data/general/messages.json', 'utf8')
+    readFileSync('./examples/data/general/messages.json', 'utf8')
   ) as any[]
 
-  it('Channel join', () => {
+  test('Channel join', () => {
     const message = parseMessage(values[0])
     expect(message.user).toBe('USERID')
     expect(message.type).toBe('message')
@@ -15,7 +16,7 @@ describe('parseMessage', () => {
     expect(message.text).toBe('<@USERID> has joined the channel')
   })
 
-  it('Message', () => {
+  test('Message', () => {
     const message = parseMessage(values[1])
     expect(message.user).toBe('USERID')
     expect(message.type).toBe('message')
@@ -58,7 +59,7 @@ describe('parseMessage', () => {
     expect(profile.isUltraRestricted).toBeFalsy()
   })
 
-  it('Bot', () => {
+  test('Bot', () => {
     const message = parseMessage(values[2])
     expect(message.type).toBe('message')
     expect(message.subtype).toBe('bot_message')
@@ -68,7 +69,7 @@ describe('parseMessage', () => {
     expect(message.botId).toBe('BOTID')
   })
 
-  it('Files', () => {
+  test('Files', () => {
     const message = parseMessage(values[5])
     expect(message.files.length).toBe(2)
     expect(message.files[0]!.permalink).toBe(
@@ -79,7 +80,7 @@ describe('parseMessage', () => {
     )
   })
 
-  it('Attachement', () => {
+  test('Attachement', () => {
     const message = parseMessage(values[6])
     expect(message.attachments.length).toBe(2)
 

@@ -1,4 +1,4 @@
-import commander from 'commander'
+import { Command } from 'commander'
 import slackLog2Md, { Options } from '../lib/index'
 
 /**
@@ -7,7 +7,7 @@ import slackLog2Md, { Options } from '../lib/index'
  * @returns Parsed options.
  */
 export const parseArgv = (argv: string[]) => {
-  const program = new commander.Command()
+  const program = new Command()
   program
     .usage('slack-log2md [options]')
     .description('Slack log file (JSON) to Markdown file.')
@@ -60,8 +60,8 @@ See also:
     githubWiki: !!opts.githubWiki,
     addUniqueMessageId: !!opts.addUniqueMessageId,
     ignore: {
-      channelLogin: opts.ignoreChannelLogin
-    }
+      channelLogin: opts.ignoreChannelLogin,
+    },
   }
 }
 

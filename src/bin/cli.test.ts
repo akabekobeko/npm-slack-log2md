@@ -1,8 +1,9 @@
+import { describe, test, expect } from 'vitest'
 import { parseArgv } from './cli'
 
 describe('CLI', () => {
   describe('input', () => {
-    it('--input', () => {
+    test('--input', () => {
       const argv = ['', '', '--input', './']
       const options = parseArgv(argv)
       expect(options.input).toBe('./')
@@ -10,7 +11,7 @@ describe('CLI', () => {
       expect(options.report).toBeFalsy()
     })
 
-    it('-i', () => {
+    test('-i', () => {
       const argv = ['', '', '-i', './']
       const options = parseArgv(argv)
       expect(options.input).toBe('./')
@@ -21,7 +22,7 @@ describe('CLI', () => {
 
   // input is required, so it is an error if not specified
   describe('output', () => {
-    it('--output', () => {
+    test('--output', () => {
       const argv = ['', '', '--output', './']
       const options = parseArgv(argv)
       expect(options.input).toBeUndefined()
@@ -29,7 +30,7 @@ describe('CLI', () => {
       expect(options.report).toBeFalsy()
     })
 
-    it('-o', () => {
+    test('-o', () => {
       const argv = ['', '', '-o', './']
       const options = parseArgv(argv)
       expect(options.input).toBeUndefined()
@@ -40,7 +41,7 @@ describe('CLI', () => {
 
   // input is required, so it is an error if not specified
   describe('report', () => {
-    it('--report', () => {
+    test('--report', () => {
       const argv = ['', '', '--report']
       const options = parseArgv(argv)
       expect(options.input).toBeUndefined()
@@ -48,7 +49,7 @@ describe('CLI', () => {
       expect(options.report).toBeTruthy()
     })
 
-    it('-r', () => {
+    test('-r', () => {
       const argv = ['', '', '-r']
       const options = parseArgv(argv)
       expect(options.input).toBeUndefined()

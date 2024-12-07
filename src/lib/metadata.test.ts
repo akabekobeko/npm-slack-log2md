@@ -1,10 +1,9 @@
-import { User } from './user'
-import { Message } from './message'
+import { describe, test, expect } from 'vitest'
 import { readUsers, readMessages } from './log2md'
 import getMetadata from './metadata'
 
 describe('getMetadata', () => {
-  it('Metadata', async () => {
+  test('Metadata', async () => {
     const users = await readUsers('./examples/data')
     const messages = await readMessages('./examples/data/general/messages.json')
 

@@ -1,10 +1,11 @@
-import fs from 'fs'
+import { describe, test, expect } from 'vitest'
+import { readFileSync } from 'node:fs'
 import parseChannel from './channel'
 
 describe('parseChannel', () => {
-  it('Parse', () => {
+  test('Parse', () => {
     const values = JSON.parse(
-      fs.readFileSync('./examples/data/channels.json', 'utf8')
+      readFileSync('./examples/data/channels.json', 'utf8')
     ) as any[]
     const channel = parseChannel(values[0])
 
